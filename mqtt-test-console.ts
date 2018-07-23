@@ -7,10 +7,6 @@ import * as fs from 'fs';
 import {server as WebSocketServer, request, IMessage,} from 'websocket';
 import * as mqtt from 'mqtt';
 import * as base64_util from './base64-util';
-// const mqtt_test = mqtt.connect('mqtt://reachnn.com');
-// setInterval(function () {
-//   mqtt_test.publish('test',JSON.stringify({time:new Date(),data:'AA'}))
-// },2000);
 
 const app = new Koa();
 const router = new Router();
@@ -64,16 +60,6 @@ wsServer.on('request', async function (request: request) {
   const connection = request.accept(request.requestedProtocols[0], request.origin);
   console.log((new Date()) + ' Connection accepted.');
   // a mqtt connect message receive
-  /**
-   *
-   * topic: mqtt topic string
-   * protocol: broker protocol (tcp\mqtt)
-   * host: broker host
-   * password: connect password
-   * username: connect username
-   * port: broker port
-   *
-   */
   connection.on('message', function (message: IMessage) {
     if (message.type !== 'utf8' || !message.utf8Data) {
       return;
@@ -86,7 +72,7 @@ wsServer.on('request', async function (request: request) {
           throw  new Error('host is empty');
         }
         mqttClient = mqtt.connect('mqtt://' + req.host);
-        mqttClient.on('error',function (error) {
+        mqttClient.on('error', function (error) {
           mqttClient.end();
           connection.sendUTF(JSON.stringify({
             type: 'res',
@@ -108,17 +94,17 @@ wsServer.on('request', async function (request: request) {
           mqttClient.on('message', function (topic: string, message: any) {
             const mqtt_log = JSON.parse(message.toString());
             const log = {
-              time : new Date(),
+              time: new Date(),
               data: base64_util.CharToHex(base64_util.decode(mqtt_log.data)),
-              frequency:mqtt_log.txInfo.frequency/ 1000000,
-              fCnt:mqtt_log.fCnt,
-              fPort:mqtt_log.fPort,
-              rssi:mqtt_log.rxInfo[0].rssi,
-              gateway:mqtt_log.rxInfo[0].mac
+              frequency: mqtt_log.txInfo.frequency / 1000000,
+              fCnt: mqtt_log.fCnt,
+              fPort: mqtt_log.fPort,
+              rssi: mqtt_log.rxInfo[0].rssi,
+              gateway: mqtt_log.rxInfo[0].mac
             };
             connection.sendUTF(JSON.stringify({
-              type:'msg',
-              log:log
+              type: 'msg',
+              log: log
             }));
           });
         });
@@ -159,7 +145,6 @@ wsServer.on('request', async function (request: request) {
           msgType: 'success',
           message: 'mqtt dis connect successful'
         }));
-
       }
     } catch (e) {
       const err_res = {
@@ -169,17 +154,15 @@ wsServer.on('request', async function (request: request) {
       };
       connection.sendUTF(JSON.stringify(err_res));
     }
-
-
-    // ws connection close
-    connection.on('close', function (code: number, desc: string) {
-      console.log(new Date() + ' a ws connection close because of ' + desc + ' Code:' + code);
-      if (mqttClient) {
-        mqttClient.end();
-        return console.log(new Date() + ' mqttClient end for close');
-      } else {
-        return;
-      }
-    });
+  });
+  // ws connection close
+  connection.on('close', function (code: number, desc: string) {
+    console.log(new Date() + ' a ws connection close because of ' + desc + ' Code:' + code);
+    if (mqttClient) {
+      mqttClient.end();
+      return console.log(new Date() + ' mqttClient end for close');
+    } else {
+      return;
+    }
   });
 });
