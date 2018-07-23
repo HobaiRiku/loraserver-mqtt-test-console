@@ -1,0 +1,247 @@
+body {
+  font-family: "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Georgia,
+  tahoma, arial, simsun, "宋体";
+  margin: 0;
+}
+
+.tiptext {
+  color: #b2b9cc;
+  padding-left: 4px;
+  font-size: 5px;
+}
+
+/* header */
+.header {
+  background-color: #20a0ff;
+  color: #fff;
+  top: 0;
+  left: 0;
+  width: 100%;
+  line-height: 64px;
+  z-index: 100;
+  position: relative;
+  box-shadow: 1px 1px 1px 1px #a1a5aa;
+}
+
+.headerrow {
+  height: 64px;
+}
+
+.headercol {
+  height: 64px;
+}
+
+.canclik {
+  cursor: pointer;
+  color: #20a0ff;
+}
+
+.headertext {
+  color: rgb(206, 229, 250);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.headertitlle {
+  height: 64px;
+  margin: 0;
+  cursor: pointer;
+}
+
+/*headrer end */
+.content {
+  width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* breadcrumb */
+.header2 {
+  margin-top: 20px;
+  color: #fff;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 100;
+  position: relative;
+}
+
+.breadcrubmbdiv {
+  background-color: #f2f2f2;
+  height: 40px;
+  position: relative;
+  border-radius: 5px;
+}
+
+.breadcrubmbsubdiv {
+  padding-top: 14px;
+  padding-left: 15px;
+}
+
+.el-breadcrumb__inner {
+  color: #20a0ff;
+  cursor: pointer;
+}
+
+/* breadcrumb end*/
+/* applications */
+.create-button-div {
+  height: 60px;
+  text-align: right;
+}
+
+.create-button {
+  margin-top: 12px;
+  border: #f2f2f2;
+  margin-right: 1px;
+  box-shadow: 1px 1px 1px 1px #a1a5aa;
+}
+
+.tip-button {
+  margin-top: 12px;
+  border: #f2f2f2;
+  margin-right: 1px;
+}
+
+.table-title-row {
+  margin-left: 15px;
+}
+
+.table-title-col {
+  line-height: 50px;
+  color: rgb(141, 137, 137)
+}
+
+.hr-div {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  height: 2px;
+  border-bottom: #f2f2f2 solid 2px;
+  border-radius: 2px;
+}
+
+.main-table {
+  margin: 2px;
+  border-radius: 2px;
+  border: #f2f2f2;
+  box-shadow: 1px 1px 1px 1px #c9cccf;
+}
+
+.panel-row{
+  padding: 10px;
+}
+.panel-button{
+  margin-left: 10px;
+}
+
+/* application end */
+.log-table {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.form-div {
+  padding-left: 20px;
+  padding-top: 30px;
+  padding-bottom: 30px;
+}
+
+.el-form-item {
+  margin-bottom: 0px;
+}
+
+.el-form--label-top .el-form-item__label {
+  float: none;
+  display: inline-block;
+  text-align: left;
+  padding: 0 0 0px;
+}
+
+.table-head {
+  height: 50px;
+  background-color: #f2f2f2;
+  text-align: right;
+}
+
+.create-head {
+  height: 50px;
+  background-color: #f2f2f2;
+}
+
+.create-title {
+  padding-top: 15px;
+  padding-left: 10px;
+  color: rgb(141, 137, 137);
+}
+
+.create-device-button-div {
+  padding-right: 10px;
+}
+
+.create-topic-div {
+  margin: 2px;
+  margin-top: 10px;
+  border-radius: 2px;
+  height: 60px;
+  border: #f2f2f2;
+  box-shadow: 1px 1px 1px 1px #c9cccf;
+  width: 640px;
+}
+
+.create-topic-input {
+  width: 200px;
+  padding-top: 15px;
+  margin-right: 20px;
+}
+
+.create-topic-text {
+  padding-top: 6px;
+  padding-left: 20px;
+  font-size: 13px;
+}
+
+/* farme */
+.row-div {
+  height: 300px;
+  padding-top: 5px;
+  padding-bottom: 10px;
+  overflow: auto;
+}
+
+.row-div2 {
+  height: 100px;
+  padding-top: 5px;
+  padding-bottom: 10px;
+  overflow: auto;
+}
+
+.log-row {
+  margin: 12px;
+  color: rgb(232, 241, 105)
+}
+
+.log-col {
+  height: 22px;
+  line-height: 21px;
+  box-shadow: 1px 1px 1px 1px #9ca4ac;
+  background-color: rgb(83, 87, 94);
+  border-radius: 2px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.log-col-text {
+  height: 22px;
+  text-align: center;
+  color: rgb(83, 87, 94);
+}
+
+/* farme end*/
+.pager {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.smalltip {
+  font-size: 12px;
+}
