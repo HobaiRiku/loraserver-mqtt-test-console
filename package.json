@@ -8,7 +8,11 @@
     "dev": "tsc && node mqtt-test-console.js",
     "start": "tsc && forever -p . -l ./info.log -e ./error.log  -a start mqtt-test-console.js",
     "restart": " tsc && forever -p . -l ./info.log -e ./error.log  -a restart mqtt-test-console.js",
-    "stop": "forever stop mqtt-test-console.js"
+    "stop": "forever stop mqtt-test-console.js",
+    "build-ui": "node ./frontend/build/build.js",
+    "dev-ui": "cd ./frontend && npm run dev",
+    "install-ui": "cd ./frontend && npm i",
+    "install-all": "npm i && cd ./frontend && npm i"
   },
   "repository": {
     "type": "git",
