@@ -54,7 +54,7 @@ let wsServer = new WebSocketServer({
   autoAcceptConnections: false
 });
 // a session with websocket
-wsServer.on('request', async function (request: request) {
+wsServer.on('request', function (request: request) {
   let mqttClient: mqtt.MqttClient;
   let topicNow: string = '';
   const connection = request.accept(request.requestedProtocols[0], request.origin);

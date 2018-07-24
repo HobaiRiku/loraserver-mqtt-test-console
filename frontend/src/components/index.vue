@@ -239,9 +239,6 @@
               _this.msg_count = 0;
               _this.fcnt_now = 0;
               _this.time_count = 0;
-              _this.internal = setInterval(function () {
-                _this.time_count++;
-              },1000)
             }
             // res for unsub
             if (res.referen === 'unsub' && res.msgType === 'success') {
@@ -259,6 +256,9 @@
               _this.msg_count =0;
             }else{
               _this.msg_count++;
+              _this.internal = setInterval(function () {
+                _this.time_count++;
+              },1000)
             }
             _this.tableData.unshift(res.log)
           }

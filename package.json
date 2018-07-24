@@ -6,8 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "tsc && node mqtt-test-console.js",
-    "start": "forever -p . -l ./info.log -e ./error.log  -a start mqtt-test-console.js",
-    "restart": "forever -p . -l ./info.log -e ./error.log  -a restart mqtt-test-console.js",
+    "start": "tsc && forever -p . -l ./info.log -e ./error.log  -a start mqtt-test-console.js",
+    "restart": " tsc && forever -p . -l ./info.log -e ./error.log  -a restart mqtt-test-console.js",
     "stop": "forever stop mqtt-test-console.js"
   },
   "repository": {
@@ -27,6 +27,7 @@
     "koa-static": "^5.0.0",
     "mqtt": "^2.18.3",
     "tslib": "^1.9.3",
+    "typescript": "^2.9.2",
     "websocket": "^1.0.26"
   },
   "devDependencies": {
