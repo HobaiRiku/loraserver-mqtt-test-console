@@ -81,7 +81,7 @@ wsServer.on('request', function (request: request) {
             message: error.message
           }));
         });
-        mqttClient.on('connect', function () {
+        mqttClient.once('connect', function () {
           connection.sendUTF(JSON.stringify({
             type: 'res',
             referen: 'connectMqtt',
@@ -99,9 +99,8 @@ wsServer.on('request', function (request: request) {
               rssi = mqtt_log.rxInfo[0].rssi;
               mac = mqtt_log.rxInfo[0].mac;
             } catch (e) {
-              console.log(e);
-              rssi = '';
-              mac = '';
+              rssi = 'server未开启rxInfo';
+              mac = 'server未开启rxInfo';
             }
             const log = {
               time: new Date(),
@@ -156,6 +155,26 @@ wsServer.on('request', function (request: request) {
           message: 'mqtt dis connect successful'
         }));
       }
+      // 请求发送数据
+      if (req.type === 'sendMessage') {
+        let data = '';
+        if (req.data !== '') {
+          data = base64_util.hexEncode(req.data);
+        }
+        const data_str = JSON.stringify({
+          reference: randomWord(false, 7),
+          fPort: req.fPort,
+          confirmed: req.confirmed,
+          data: data
+        });
+        mqttClient.publish(req.topic, data_str);
+        return connection.sendUTF(JSON.stringify({
+          type: 'res',
+          referen: 'sendMessage',
+          msgType: 'success',
+          message: 'data sent:' + data_str
+        }));
+      }
     } catch (e) {
       const err_res = {
         type: 'res',
@@ -176,3 +195,82 @@ wsServer.on('request', function (request: request) {
     }
   });
 });
+
+
+function randomWord(randomFlag, min, max?) {
+  let str = '',
+    range = min,
+    arr = [
+      '0',
+      '1',
+      '2',
+      '3',
+      '4',
+      '5',
+      '6',
+      '7',
+      '8',
+      '9',
+      'a',
+      'b',
+      'c',
+      'd',
+      'e',
+      'f',
+      'g',
+      'h',
+      'i',
+      'j',
+      'k',
+      'l',
+      'm',
+      'n',
+      'o',
+      'p',
+      'q',
+      'r',
+      's',
+      't',
+      'u',
+      'v',
+      'w',
+      'x',
+      'y',
+      'z',
+      'A',
+      'B',
+      'C',
+      'D',
+      'E',
+      'F',
+      'G',
+      'H',
+      'I',
+      'J',
+      'K',
+      'L',
+      'M',
+      'N',
+      'O',
+      'P',
+      'Q',
+      'R',
+      'S',
+      'T',
+      'U',
+      'V',
+      'W',
+      'X',
+      'Y',
+      'Z',
+    ];
+  // '-', '.', '~', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', ':', '<', '>', '?'
+  if (randomFlag) {
+    range = Math.round(Math.random() * (max - min)) + min; // 任意长度
+  }
+  for (let i = 0; i < range; i++) {
+    let pos = Math.round(Math.random() * (arr.length - 1));
+    str += arr[pos];
+  }
+  return str;
+}
