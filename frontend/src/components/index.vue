@@ -109,7 +109,7 @@
             </el-row>
             <el-row class="panel-row">
               <el-col :span="14">
-                <el-tooltip content="mqtt连接的topic，注意loraserver版本或者设置的不同，该主题可能不同，application/xx/node[device]/xxxx/tx"
+                <el-tooltip content="mqtt连接的topic，注意loraserver版本或者设置的不同，该主题可能不同，application/xx/node[device]/xxxx/rx"
                             placement="top">
                   <el-input size="mini" :disabled="isSubing" v-model="topic"
                             placeholder="application/{appID}/node[device]/{devEUI}/rx">
