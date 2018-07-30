@@ -32,6 +32,10 @@ npm run dev
 npm run dev-ui
 ```
 
+## screenshot:
+
+![](screenshot.png)
+
 ## licence:
 
 MIT
