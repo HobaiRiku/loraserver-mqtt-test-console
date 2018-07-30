@@ -109,7 +109,7 @@
             </el-row>
             <el-row class="panel-row">
               <el-col :span="14">
-                <el-tooltip content="mqtt连接的topic，注意loraserver版本或者设置的不通，该主题可能不同，application/xx/node[device]/xxxx/tx"
+                <el-tooltip content="mqtt连接的topic，注意loraserver版本或者设置的不同，该主题可能不同，application/xx/node[device]/xxxx/tx"
                             placement="top">
                   <el-input size="mini" :disabled="isSubing" v-model="topic"
                             placeholder="application/{appID}/node[device]/{devEUI}/rx">
@@ -219,6 +219,14 @@
                 </el-tooltip>
               </el-form-item>
             </el-form>
+            <el-row class="panel-row">
+              <el-col :span="4">
+              <el-button size="mini" type="info" @click='sent_count = 0' >
+                发送计数:{{sent_count}}
+              </el-button>
+              </el-col>
+
+            </el-row>
           </div>
 
         </div>
@@ -258,6 +266,7 @@
         isConfirmed: false,
         data_sent: '',
         fPort: '',
+        sent_count:1,
 
       };
     },
@@ -429,7 +438,8 @@
               fPort:_this.fPort,
               confirmed:_this.isConfirmed,
               data: _this.data_sent
-            }))
+            }));
+            _this.sent_count++;
           },_this.delay)
         }else{
           this.ws.send(JSON.stringify({
@@ -438,7 +448,8 @@
             fPort:this.fPort,
             confirmed:this.isConfirmed,
             data: this.data_sent
-          }))
+          }));
+          _this.sent_count++
         }
         this.isSending = true;
       },
