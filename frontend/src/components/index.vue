@@ -150,12 +150,12 @@
                   当前fcnt:{{fcnt_now}}
                 </el-button>
               </el-col>
-              <el-col :span="4">
+              <el-col :span="5">
                 <el-button size="mini" type="info">
-                  累计时间:{{time_count}}s
+                  累计时间:{{time_str}}
                 </el-button>
               </el-col>
-              <el-col :span="4">
+              <el-col :span="3">
                 <el-button size="mini" type="warning">
                   包偏差:{{fcnt_now-fcnt_start - msg_count}}
                 </el-button>
@@ -184,7 +184,8 @@
                 </el-button>
               </el-col>
               <el-col :span="3">
-                <el-button v-if="isSending&&isRepeat" size="mini" type="danger" class="panel-button" @click="stopSendMessage">
+                <el-button v-if="isSending&&isRepeat" size="mini" type="danger" class="panel-button"
+                           @click="stopSendMessage">
                   stop
                 </el-button>
 
@@ -221,9 +222,9 @@
             </el-form>
             <el-row class="panel-row">
               <el-col :span="4">
-              <el-button size="mini" type="info" @click='sent_count = 0' >
-                发送计数:{{sent_count}}
-              </el-button>
+                <el-button size="mini" type="info" @click='sent_count = 0'>
+                  发送计数:{{sent_count}}
+                </el-button>
               </el-col>
 
             </el-row>
@@ -266,11 +267,17 @@
         isConfirmed: false,
         data_sent: '',
         fPort: '',
-        sent_count:1,
+        sent_count: 0,
 
       };
     },
     computed: {
+      time_str() {
+        const sec = this.time_count % 60;
+        const min = ((this.time_count - sec)/60)%60;
+        const hr = (((this.time_count - sec)/60)-min)/60;
+        return hr+":"+min+":"+sec
+      },
       send_button_text() {
         if (this.isSending) {
           return 'sending';
@@ -300,7 +307,7 @@
         let _this = this;
         this.ws.onopen = function () {
           console.log('ws connect to ' + wsURL)
-        }
+        };
         this.ws.onmessage = function (e) {
           const data = e.data;
           const res = JSON.parse(data);
@@ -310,11 +317,11 @@
               message: res.message,
               type: res.msgType ? res.msgType : 'info'
             });
-            if(res.msgType == 'error'){
+            if (res.msgType == 'error') {
               _this.isSending = false;
               clearInterval(_this.send_interval);
             }
-            if(!_this.isRepeat){
+            if (!_this.isRepeat) {
               _this.isSending = false;
             }
             // res for connectMqtt
@@ -361,11 +368,11 @@
               _this.msg_count = 0;
             } else {
               _this.msg_count++;
-              if(!_this.isInit){
+              if (!_this.isInit) {
                 _this.internal = setInterval(function () {
                   _this.time_count++;
                 }, 1000);
-                _this.isInit =true;
+                _this.isInit = true;
               }
 
             }
@@ -427,26 +434,26 @@
         }
 
         let _this = this;
-        if(this.isRepeat){
-          if(this.delay === '' || typeof this.delay !== 'number'){
+        if (this.isRepeat) {
+          if (this.delay === '' || typeof this.delay !== 'number') {
             return this.$message.error('delay error')
           }
           this.send_interval = setInterval(function () {
             _this.ws.send(JSON.stringify({
               type: 'sendMessage',
-              topic:_this.topic_tx,
-              fPort:_this.fPort,
-              confirmed:_this.isConfirmed,
+              topic: _this.topic_tx,
+              fPort: _this.fPort,
+              confirmed: _this.isConfirmed,
               data: _this.data_sent
             }));
             _this.sent_count++;
-          },_this.delay)
-        }else{
+          }, _this.delay)
+        } else {
           this.ws.send(JSON.stringify({
             type: 'sendMessage',
-            topic:this.topic_tx,
-            fPort:this.fPort,
-            confirmed:this.isConfirmed,
+            topic: this.topic_tx,
+            fPort: this.fPort,
+            confirmed: this.isConfirmed,
             data: this.data_sent
           }));
           _this.sent_count++
@@ -455,7 +462,7 @@
       },
       stopSendMessage() {
         this.isSending = false;
-       clearInterval(this.send_interval);
+        clearInterval(this.send_interval);
       },
       clearLog() {
         this.tableData = [];
