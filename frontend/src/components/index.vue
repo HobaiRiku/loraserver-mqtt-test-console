@@ -38,6 +38,7 @@
                   class="log-table"
                   height="300px">
                   <el-table-column
+                    align="center"
                     prop="time"
                     label="时间"
                     width="110">
@@ -46,31 +47,37 @@
                     </template>
                   </el-table-column>
                   <el-table-column
+                    align="center"
                     prop="data"
                     label="数据"
                     width="180">
                   </el-table-column>
                   <el-table-column
+                    align="center"
                     prop="frequency"
                     label="频率"
                     width="80">
                   </el-table-column>
                   <el-table-column
+                    align="center"
                     prop="fPort"
                     label="fPort"
                     width="80">
                   </el-table-column>
                   <el-table-column
+                    align="center"
                     prop="rssi"
                     label="RSSI"
                     width="80">
                   </el-table-column>
                   <el-table-column
+                    align="center"
                     prop="gateway"
                     label="网关"
                     width="180">
                   </el-table-column>
                   <el-table-column
+                    align="center"
                     prop="fCnt"
                     label="fCnt">
                   </el-table-column>
@@ -99,10 +106,12 @@
               </el-col>
             </el-row>
             <el-row class="panel-row">
-              <el-col :span="10">
+              <el-col :span="14">
+                <el-tooltip content="mqtt连接的topic，注意loraserver版本或者设置的不通，该主题可能不同，application/xx/node[device]/xxxx/tx" placement="top">
                 <el-input size="mini" :disabled="isSubing" v-model="topic" placeholder="application/{appID}/node[device]/{devEUI}/rx">
-                  <template slot="prepend">topic</template>
+                  <template slot="prepend">topic for rx</template>
                 </el-input>
+                </el-tooltip>
               </el-col>
               <el-col :span="4">
                 <el-button v-if="!isSubing" size="mini" class="panel-button" @click="subscribeTopic">
@@ -121,9 +130,11 @@
             </el-row>
             <el-row class="panel-row">
               <el-col :span="4">
+                <el-tooltip content="注意：统计功能需要一个上行消息进行初始化" placement="top">
                 <el-button size="mini" type="info">
                   起始fcnt:{{fcnt_start}}
                 </el-button>
+                </el-tooltip>
               </el-col>
               <el-col :span="4">
                 <el-button size="mini" type="info">
@@ -153,6 +164,57 @@
             </el-row>
 
           </div>
+          <div v-if="true" class="main-table" style="margin-top: 20px">
+            <el-row class="panel-row">
+              <el-col :span="14">
+                <el-tooltip content="类同接收的topic，后缀为tx，application/xx/node[device]/xxxx/tx" placement="top">
+                <el-input size="mini"  v-model="topic_tx" placeholder="application/{appID}/node[device]/{devEUI}/tx">
+                  <template slot="prepend">topic for tx</template>
+                </el-input>
+                </el-tooltip>
+              </el-col>
+              <el-col :span="4">
+                <el-button  size="mini" :loading="isSending" class="panel-button" @click="">
+                  {{send_button_text}}
+                </el-button>
+              </el-col>
+              <el-col :span="4">
+                <el-button v-if="isSending" size="mini" type="danger"  class="panel-button" >
+                  stop
+                </el-button>
+
+              </el-col>
+            </el-row>
+            <el-form :inline="true" style="padding-left: 20px" >
+              <el-form-item>
+                <el-tooltip content="loraWAN传输消息的类型，是否为confirmed" placement="top">
+                <el-checkbox v-model="msg_type">confirmed</el-checkbox>
+                </el-tooltip>
+              </el-form-item>
+              <el-form-item  label="fPort:" >
+                <el-tooltip content="loraWAN传输消息的端口，为2～223的一个任意数" placement="top">
+                  <el-input size="mini" style="width:90px" placeholder="2~223"></el-input>
+                </el-tooltip>
+              </el-form-item>
+              <el-form-item  label="data:">
+                <el-tooltip content="数据以小写16进制形式输入空格隔开，例如:ff 1a 4e" placement="top">
+                <el-input size="mini" placeholder="16进制小写 空格隔开" style="width:400px"></el-input>
+                </el-tooltip>
+              </el-form-item>
+            </el-form>
+               <el-form :inline="true" style="padding-left: 20px" >
+                 <el-form-item>
+                   <el-tooltip content="是否循环发送" placement="top">
+                   <el-checkbox v-model="isRepeat">is repeat</el-checkbox>
+                   </el-tooltip>
+                 </el-form-item>
+                 <el-form-item v-if="isRepeat" label="delay:">
+                   <el-tooltip content="class A 设备建议delay大于或等于设备的最小设备上行时间间隔" placement="top">
+                     <el-input size="mini" style="width:100px" placeholder="delay ms"></el-input>
+                   </el-tooltip>
+                 </el-form-item>
+               </el-form>
+          </div>
 
         </div>
 
@@ -176,6 +238,7 @@
         protocol: 'mqtt://',
         host: '',
         topic: '',
+        topic_tx:'',
         tableData: [],
         ws: '',
         isMqttConnect: false,
@@ -183,10 +246,22 @@
         isConnecting:false,
         interval:'',
         isInit:false,
+        isRepeat:false,
+        isSending:false,
+        send_interval:'',
+        delay:'',
+        msg_type:'',
 
       };
     },
     computed: {
+      send_button_text(){
+        if(this.isSending){
+          return 'sending';
+        }else{
+          return 'send message';
+        }
+      },
       loss_rate() {
         if ((this.fcnt_now - this.fcnt_start) <= 0) {
           return "0%"
@@ -203,10 +278,13 @@
     methods: {
       connectWs() {
         let domain = window.location.host;
-        console.log(domain);
-        let wsURL = 'ws://'+domain;
+        let domain_name = domain.split(':')[0];
+        let wsURL = 'ws://'+domain_name+':4889';
         this.ws = new WebSocket(wsURL);
         let _this = this;
+        this.ws.onopen = function () {
+          console.log('ws connect to '+ wsURL)
+        }
         this.ws.onmessage = function(e) {
           const data = e.data;
           const res = JSON.parse(data);
@@ -306,6 +384,12 @@
         this.ws.send(JSON.stringify({
           type: 'unsub',
         }))
+      },
+      sendMessage(){
+
+      },
+      stopSendMessage(){
+
       },
       clearLog(){
         this.tableData=[];

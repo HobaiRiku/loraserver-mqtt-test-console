@@ -93,14 +93,24 @@ wsServer.on('request', function (request: request) {
           // mqtt message sent
           mqttClient.on('message', function (topic: string, message: any) {
             const mqtt_log = JSON.parse(message.toString());
+            let rssi;
+            let mac;
+            try {
+              rssi = mqtt_log.rxInfo[0].rssi;
+              mac = mqtt_log.rxInfo[0].mac;
+            } catch (e) {
+              console.log(e);
+              rssi = '';
+              mac = '';
+            }
             const log = {
               time: new Date(),
               data: base64_util.CharToHex(base64_util.decode(mqtt_log.data)),
               frequency: mqtt_log.txInfo.frequency / 1000000,
               fCnt: mqtt_log.fCnt,
               fPort: mqtt_log.fPort,
-              rssi: mqtt_log.rxInfo[0].rssi,
-              gateway: mqtt_log.rxInfo[0].mac
+              rssi: rssi,
+              gateway: mac
             };
             connection.sendUTF(JSON.stringify({
               type: 'msg',
