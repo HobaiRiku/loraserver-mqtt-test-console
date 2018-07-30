@@ -6,7 +6,7 @@ Nodejs +Koa+ websocket-npm+vue+element.io
 
 ## feature:
 
-* Connect to an mqtt broker of loraserver  
+* connect to an mqtt broker of loraserver  
 * subscribe tx topic and show live mqtt message from lora app server
 * fCnt and packet loss statistics 
 * downLink mqtt message
