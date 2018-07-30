@@ -429,14 +429,17 @@
         if (!this.isMqttConnect) {
           return this.$message.error('mqtt is not connected')
         }
+        if (this.topic_tx ==='') {
+          return this.$message.error('topic for tx 参数未填写')
+        }
         if (this.fPort === '' || typeof this.fPort !== 'number') {
-          return this.$message.error('fPort error')
+          return this.$message.error('fPort 参数未填写或错误')
         }
 
         let _this = this;
         if (this.isRepeat) {
           if (this.delay === '' || typeof this.delay !== 'number') {
-            return this.$message.error('delay error')
+            return this.$message.error('delay 参数未填写或错误')
           }
           this.send_interval = setInterval(function () {
             _this.ws.send(JSON.stringify({
