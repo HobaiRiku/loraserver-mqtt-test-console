@@ -4,14 +4,14 @@ this project is a simple web mqtt client tool for [loraserver](https://www.loras
 
 Nodejs +Koa+ websocket-npm+vue+element.io
 
-#### feature:
+## feature:
 
 * Connect to an mqtt broker of loraserver  
 * subscribe tx topic and show live mqtt message from lora app server
 * fCnt and packet loss statistics 
 * downLink mqtt message
 
-#### start:
+## start:
 
 you need to install nodejs 
 
@@ -23,7 +23,7 @@ npm run start
 
 Then open http://127.0.0.1:4889/
 
-#### dev:
+## dev:
 
 ```bash
 // for server
@@ -32,6 +32,6 @@ npm run dev
 npm run dev-ui
 ```
 
-#### licence:
+## licence:
 
 MIT
