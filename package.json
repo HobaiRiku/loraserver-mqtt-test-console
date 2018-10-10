@@ -26,19 +26,19 @@
   "homepage": "https://github.com/HobaiRiku/loraserver-mqtt-test-console#readme",
   "dependencies": {
     "base-64": "^0.1.0",
-    "koa": "^2.5.2",
+    "koa": "^2.5.3",
     "koa-router": "^7.4.0",
     "koa-static": "^5.0.0",
-    "mqtt": "^2.18.3",
+    "mqtt": "^2.18.8",
     "tslib": "^1.9.3",
-    "typescript": "^2.9.2",
-    "websocket": "^1.0.26"
+    "typescript": "^3.1.2",
+    "websocket": "^1.0.28"
   },
   "devDependencies": {
     "@types/base-64": "^0.1.2",
     "@types/koa": "^2.0.46",
     "@types/koa-static": "^4.0.0",
     "@types/mqtt": "^2.5.0",
-    "@types/websocket": "0.0.39"
+    "@types/websocket": "0.0.40"
   }
 }
