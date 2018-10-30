@@ -203,7 +203,7 @@
                 </el-tooltip>
               </el-form-item>
               <el-form-item label="data:">
-                <el-tooltip content="数据以小写16进制形式输入空格隔开，例如:ff 1a 4e" placement="top">
+                <el-tooltip content="数据以小写16进制形式输入空格隔开，例如:ff 1a 4e" placement="bottom">
                   <el-input size="mini" placeholder="16进制小写 空格隔开" v-model="data_sent" style="width:400px"></el-input>
                 </el-tooltip>
               </el-form-item>
