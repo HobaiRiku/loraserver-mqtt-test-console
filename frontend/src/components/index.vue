@@ -12,7 +12,6 @@
         <div class="content">
           <div>
             <div class="hr-div"></div>
-
             <div v-if="true" class="main-table">
               <div class="table-head" style="text-align: left;">
                 <el-row class="table-title-row">
@@ -30,21 +29,12 @@
                   </el-col>
                 </el-row>
               </div>
-
               <div class="row-div">
-                <el-table
-                  :data="tableData"
-                  style="width: 95%"
-                  class="log-table"
-                  height="300px">
-                  <el-table-column
-                    align="center"
-                    prop="time"
-                    label="时间"
-                    width="110">
+                <el-table :data="tableData" style="width: 95%" class="log-table" height="300px">
+                  <el-table-column align="center" prop="time" label="时间" width="110">
                     <template slot-scope="scope">
-                      <span>{{scope.row.time|timeFilter}}</span>
-                    </template>
+                        <span>{{scope.row.time|timeFilter}}</span>
+</template>
                   </el-table-column>
                   <el-table-column
                     align="center"
@@ -92,9 +82,9 @@
               <el-col :span="14">
                 <el-input :disabled="isMqttConnect" size="mini" v-model="host"
                           placeholder="username:password@example.com:1883">
-                  <template slot="prepend">
-                    {{protocol}}
-                  </template>
+<template slot="prepend">
+   {{protocol}}
+</template>
                 </el-input>
               </el-col>
               <el-col :span="6">
@@ -113,7 +103,9 @@
                             placement="top">
                   <el-input size="mini" :disabled="isSubing" v-model="topic"
                             placeholder="application/{appID}/node[device]/{devEUI}/rx">
-                    <template slot="prepend">topic for rx</template>
+<template slot="prepend">
+  topic for rx
+</template>
                   </el-input>
                 </el-tooltip>
               </el-col>
@@ -166,7 +158,26 @@
                 </el-button>
               </el-col>
             </el-row>
-
+ <el-row class="panel-row">
+              <el-col :span="4">
+                <el-tooltip content="注意：统计功能需要一个上行消息进行初始化" placement="top">
+                  <el-button size="mini" type="info">
+                    max:{{max}}
+                  </el-button>
+                </el-tooltip>
+              </el-col>
+              <el-col :span="4">
+                <el-button size="mini" type="info">
+                  min:{{min}}
+                </el-button>
+              </el-col>
+              <el-col :span="4">
+                <el-button size="mini" type="info">
+                 svg:{{svg}}
+                </el-button>
+              </el-col>
+            
+            </el-row>
           </div>
           <div v-if="true" class="main-table" style="margin-top: 20px">
             <el-row class="panel-row">
@@ -174,7 +185,9 @@
                 <el-tooltip content="类同接收的topic，后缀为tx，application/xx/node[device]/xxxx/tx" placement="top">
                   <el-input size="mini" :disabled="isSending" v-model="topic_tx"
                             placeholder="application/{appID}/node[device]/{devEUI}/tx">
-                    <template slot="prepend">topic for tx</template>
+<template slot="prepend">
+  topic for tx
+</template>
                   </el-input>
                 </el-tooltip>
               </el-col>
@@ -268,15 +281,18 @@
         data_sent: '',
         fPort: '',
         sent_count: 0,
-
+        max: 0,
+        min: 0,
+        svg: 0,
+        sum: 0
       };
     },
     computed: {
       time_str() {
         const sec = this.time_count % 60;
-        const min = ((this.time_count - sec)/60)%60;
-        const hr = (((this.time_count - sec)/60)-min)/60;
-        return hr+":"+min+":"+sec
+        const min = ((this.time_count - sec) / 60) % 60;
+        const hr = (((this.time_count - sec) / 60) - min) / 60;
+        return hr + ":" + min + ":" + sec
       },
       send_button_text() {
         if (this.isSending) {
@@ -305,10 +321,10 @@
         let wsURL = 'ws://' + domain_name + ':4889';
         this.ws = new WebSocket(wsURL);
         let _this = this;
-        this.ws.onopen = function () {
+        this.ws.onopen = function() {
           console.log('ws connect to ' + wsURL)
         };
-        this.ws.onmessage = function (e) {
+        this.ws.onmessage = function(e) {
           const data = e.data;
           const res = JSON.parse(data);
           // res come
@@ -334,7 +350,6 @@
                 _this.isConnecting = false;
                 clearInterval(_this.interval);
               }
-
             }
             // res for dis connectMqtt
             if (res.referen === 'disConnectMqtt' && res.msgType === 'success') {
@@ -355,7 +370,6 @@
             }
             // res for sendMeesage
             if (res.referen === 'sendMessage' && res.msgType === 'success') {
-
             }
           }
           // mqtt msg come
@@ -369,17 +383,30 @@
             } else {
               _this.msg_count++;
               if (!_this.isInit) {
-                _this.internal = setInterval(function () {
+                _this.internal = setInterval(function() {
                   _this.time_count++;
                 }, 1000);
                 _this.isInit = true;
               }
-
             }
-            _this.tableData.unshift(res.log)
+            _this.tableData.unshift(res.log);
+          
+           var state=isNaN(res.log);        
+           // 新增
+           if( _this.tableData.length=1&&state==false){
+            _this.svg= _this.sum=_this.min=_this.max=res.log.rssi;            
+           }else if(_this.tableData.length!=1&&state==false)
+           {
+            res.log.rssi > _this.max ? _this.max = res.log.rssi : _this.max = _this.max;
+           res.log.rssi < _this.min ? _this.min = res.log.rssi : _this.min = _this.min;
+           _this.sum = _this.sum + res.log.rssi;
+           if (_this.sum != null) {
+             _this.svg = (_this.sum / _this.tableData.length).toFixed(2);
+           }         
+           }
           }
         };
-        this.ws.onclose = function () {
+        this.ws.onclose = function() {
           _this.$message.error('websocket connect fail : server error')
         }
       },
@@ -393,7 +420,7 @@
           type: 'connectMqtt',
           host: this.host
         }));
-        setTimeout(function () {
+        setTimeout(function() {
           if (_this.isConnecting) {
             _this.$message.error('connect to mqtt server timeout, please check your host')
           }
@@ -429,19 +456,18 @@
         if (!this.isMqttConnect) {
           return this.$message.error('mqtt is not connected')
         }
-        if (this.topic_tx ==='') {
+        if (this.topic_tx === '') {
           return this.$message.error('topic for tx 参数未填写')
         }
         if (this.fPort === '' || typeof this.fPort !== 'number') {
           return this.$message.error('fPort 参数未填写或错误')
         }
-
         let _this = this;
         if (this.isRepeat) {
           if (this.delay === '' || typeof this.delay !== 'number') {
             return this.$message.error('delay 参数未填写或错误')
           }
-          this.send_interval = setInterval(function () {
+          this.send_interval = setInterval(function() {
             _this.ws.send(JSON.stringify({
               type: 'sendMessage',
               topic: _this.topic_tx,
@@ -469,6 +495,10 @@
       },
       clearLog() {
         this.tableData = [];
+        this.min=0;
+        this.max=0;
+        this.sum=0;
+        this.svg=0;
       }
     },
     watch: {}
@@ -480,10 +510,8 @@
   .itemlist-leave-active {
     transition: all 1s;
   }
-
   .itemlist-enter,
   .itemlist-leave-active {
     opacity: 0;
   }
-
 </style>
