@@ -162,18 +162,18 @@
               <el-col :span="4">
                 <el-tooltip content="注意：统计功能需要一个上行消息进行初始化" placement="top">
                   <el-button size="mini" type="info">
-                    max:{{max}}
+                    RSSI_max:{{max}}
                   </el-button>
                 </el-tooltip>
               </el-col>
               <el-col :span="4">
                 <el-button size="mini" type="info">
-                  min:{{min}}
+                  RSSI_min:{{min}}
                 </el-button>
               </el-col>
               <el-col :span="4">
                 <el-button size="mini" type="info">
-                 svg:{{svg}}
+                 RSSI_avg:{{svg}}
                 </el-button>
               </el-col>
             
