@@ -284,7 +284,8 @@
         max: 0,
         min: 0,
         svg: 0,
-        sum: 0
+        sum: 0,
+        list:[]
       };
     },
     computed: {
@@ -314,6 +315,7 @@
     mounted() {
       this.connectWs();
     },
+    
     methods: {
       connectWs() {
         let domain = window.location.host;
@@ -362,6 +364,13 @@
               _this.msg_count = 0;
               _this.fcnt_now = 0;
               _this.time_count = 0;
+         
+              //新增
+                _this.min=0;
+        _this.max=0;
+         _this.sum=0;
+         _this.svg=0;
+              _this.list=[];
             }
             // res for unsub
             if (res.referen === 'unsub' && res.msgType === 'success') {
@@ -390,18 +399,19 @@
               }
             }
             _this.tableData.unshift(res.log);
+            _this.list.unshift(res.log);
           
-           var state=isNaN(res.log);        
+           var state=isNaN(res.log.rssi);            
            // 新增
-           if( _this.tableData.length=1&&state==false){
+           if(  _this.list.length==1&&state==false){
             _this.svg= _this.sum=_this.min=_this.max=res.log.rssi;            
-           }else if(_this.tableData.length!=1&&state==false)
+           }else if( _this.list.length!=1&&state==false)
            {
             res.log.rssi > _this.max ? _this.max = res.log.rssi : _this.max = _this.max;
            res.log.rssi < _this.min ? _this.min = res.log.rssi : _this.min = _this.min;
            _this.sum = _this.sum + res.log.rssi;
            if (_this.sum != null) {
-             _this.svg = (_this.sum / _this.tableData.length).toFixed(2);
+             _this.svg = (_this.sum /  _this.list.length).toFixed(2);
            }         
            }
           }
@@ -495,10 +505,7 @@
       },
       clearLog() {
         this.tableData = [];
-        this.min=0;
-        this.max=0;
-        this.sum=0;
-        this.svg=0;
+       
       }
     },
     watch: {}
