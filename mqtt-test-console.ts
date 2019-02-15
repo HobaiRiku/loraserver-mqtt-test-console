@@ -21,14 +21,14 @@ app.use(async (ctx: Koa.Context, next: any) => {
     };
   }
 });
-const staticPath = './frontend/dist';
+const staticPath = './ui/dist';
 // load static file dir
 app.use(_static(
   path.join(__dirname, staticPath)
 ));
 // load page
 router.get('*', function (ctx: Koa.Context) {
-  const index = fs.readFileSync('./frontend/dist/test.html');
+  const index = fs.readFileSync('./ui/dist/index.html');
   ctx.status = 200;
   ctx.body = index;
 });
@@ -95,12 +95,15 @@ wsServer.on('request', function (request: request) {
             const mqtt_log = JSON.parse(message.toString());
             let rssi;
             let mac;
+            let loRaSNR;
             try {
               rssi = mqtt_log.rxInfo[0].rssi;
+              loRaSNR = mqtt_log.rxInfo[0].loRaSNR;
               mac = mqtt_log.rxInfo[0].mac;
             } catch (e) {
               rssi = 'server未开启rxInfo';
               mac = 'server未开启rxInfo';
+              loRaSNR = 'server未开启rxInfo';
             }
             const log = {
               time: new Date(),
@@ -109,6 +112,7 @@ wsServer.on('request', function (request: request) {
               fCnt: mqtt_log.fCnt,
               fPort: mqtt_log.fPort,
               rssi: rssi,
+              snr: loRaSNR,
               gateway: mac
             };
             connection.sendUTF(JSON.stringify({
