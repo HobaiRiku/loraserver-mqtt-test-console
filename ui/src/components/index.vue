@@ -79,14 +79,14 @@
             <el-row class="panel-row">
               <el-col :span="14">
                 <el-tooltip
-                  content="mqtt连接的topic，注意loraserver版本或者设置的不同，该主题可能不同，application/xx/node[device]/xxxx/rx"
+                  content="所要订阅的设备数据topic，注意loraserver设置的不同，该topic可能不同，application/xx/device/xxxx/rx"
                   placement="top"
                 >
                   <el-input
                     size="mini"
                     :disabled="isSubing"
                     v-model="topic"
-                    placeholder="application/{appID}/node[device]/{devEUI}/rx"
+                    placeholder="application/{appID}/device/{devEUI}/rx"
                   >
                     <template slot="prepend">topic for rx</template>
                   </el-input>
@@ -136,14 +136,14 @@
                 <el-button size="mini" type="warning">包偏差:{{fcnt_now-fcnt_start - msg_count}}</el-button>
               </el-col>
               <el-col :span="4">
+                  <el-tooltip content="注意：统计功能需要一个上行消息进行初始化" placement="top">
                 <el-button size="mini" type="warning">丢包率:{{loss_rate}}</el-button>
+                  </el-tooltip>
               </el-col>
             </el-row>
             <el-row class="panel-row">
               <el-col :span="4">
-                <el-tooltip content="注意：统计功能需要一个上行消息进行初始化" placement="top">
                   <el-button size="mini" type="info">RSSI_max:{{max}}</el-button>
-                </el-tooltip>
               </el-col>
               <el-col :span="4">
                 <el-button size="mini" type="info">RSSI_min:{{min}}</el-button>
@@ -160,14 +160,14 @@
             <el-row class="panel-row">
               <el-col :span="14">
                 <el-tooltip
-                  content="类同接收的topic，后缀为tx，application/xx/node[device]/xxxx/tx"
+                  content="类同接收的topic，后缀为tx，application/xx/device/xxxx/tx"
                   placement="top"
                 >
                   <el-input
                     size="mini"
                     :disabled="isSending"
                     v-model="topic_tx"
-                    placeholder="application/{appID}/node[device]/{devEUI}/tx"
+                    placeholder="application/{appID}/device/{devEUI}/tx"
                   >
                     <template slot="prepend">topic for tx</template>
                   </el-input>
@@ -194,12 +194,12 @@
             </el-row>
             <el-form :inline="true" style="padding-left: 20px">
               <el-form-item label="type:">
-                <el-tooltip content="loraWAN传输消息的类型，是否为confirmed" placement="top">
+                <el-tooltip content="loraWAN传输消息的类型，是否为confirmed" placement="bottom">
                   <el-checkbox v-model="isConfirmed">confirmed</el-checkbox>
                 </el-tooltip>
               </el-form-item>
               <el-form-item label="fPort:">
-                <el-tooltip content="loraWAN传输消息的端口，为2～223的一个任意数" placement="top">
+                <el-tooltip content="loraWAN传输消息的端口，为2～223的一个任意数" placement="bottom">
                   <el-input
                     size="mini"
                     style="width:80px"
