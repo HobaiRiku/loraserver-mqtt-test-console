@@ -10,8 +10,9 @@
     "stop": "pm2 stop mqtt-test-console",
     "build-ui": "cd ./ui && yarn run build",
     "dev-ui": "cd ./ui && yarn run serve",
-    "install-ui": "cd ./ui && yarn isntall",
-    "install-all": "npm i && cd ./ui && yarn install"
+    "install-ui": "cd ./ui && yarn install",
+    "install-all": "npm i && cd ./ui && yarn install",
+    "deploy_run":"npm stop && npm run install-all && npm run build-ui && npm start"
   },
   "repository": {
     "type": "git",
