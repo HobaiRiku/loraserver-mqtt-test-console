@@ -136,14 +136,14 @@
                 <el-button size="mini" type="warning">包偏差:{{fcnt_now-fcnt_start - msg_count}}</el-button>
               </el-col>
               <el-col :span="4">
-                  <el-tooltip content="注意：统计功能需要一个上行消息进行初始化" placement="top">
-                <el-button size="mini" type="warning">丢包率:{{loss_rate}}</el-button>
-                  </el-tooltip>
+                <el-tooltip content="注意：统计功能需要一个上行消息进行初始化" placement="top">
+                  <el-button size="mini" type="warning">丢包率:{{loss_rate}}</el-button>
+                </el-tooltip>
               </el-col>
             </el-row>
             <el-row class="panel-row">
               <el-col :span="4">
-                  <el-button size="mini" type="info">RSSI_max:{{max}}</el-button>
+                <el-button size="mini" type="info">RSSI_max:{{max}}</el-button>
               </el-col>
               <el-col :span="4">
                 <el-button size="mini" type="info">RSSI_min:{{min}}</el-button>
@@ -226,7 +226,7 @@
                 </el-tooltip>
               </el-form-item>
               <el-form-item v-if="isRepeat" label="delay:">
-                <el-tooltip content="class A 设备建议delay大于或等于设备的最小设备上行时间间隔" placement="top">
+                <el-tooltip content="class A 设备建议delay大于或等于设备的最小设备上行时间间隔, 不能小于200" placement="top">
                   <el-input
                     size="mini"
                     style="width:100px"
@@ -326,11 +326,15 @@ export default {
     const topic_tx_c = localStorage.getItem("topic_tx");
     const fPort_c = localStorage.getItem("fPort");
     const data_sent_c = localStorage.getItem("data_sent");
+    const delay_c = localStorage.getItem("delay");
+    const isRepeat_c = JSON.parse(localStorage.getItem("isRepeat"));
     this.host = host_c !== undefined ? host_c : "";
     this.topic = topic_c !== undefined ? topic_c : "";
     this.topic_tx = topic_tx_c !== undefined ? topic_tx_c : "";
     this.fPort = fPort_c !== undefined ? fPort_c : "";
     this.data_sent = data_sent_c !== undefined ? data_sent_c : "";
+    this.delay = delay_c !== undefined ? delay_c : "";
+    this.isRepeat = isRepeat_c !== undefined ? isRepeat_c : false;
   },
 
   methods: {
@@ -342,6 +346,10 @@ export default {
       let _this = this;
       this.ws.onopen = function() {
         console.log("ws connect to " + wsURL);
+        _this.$message({
+          message: "successful connect to " + wsURL +" websocket server",
+          type: "success"
+        });
       };
       this.ws.onmessage = function(e) {
         const data = e.data;
@@ -444,7 +452,22 @@ export default {
         }
       };
       this.ws.onclose = function() {
-        _this.$message.error("websocket connect fail : server error");
+        _this.$message.error({
+          message: "websocket connect fail : server error",
+          showClose: true,
+          duration: 0,
+          onClose: () => {
+            location.reload();
+          }
+        });
+        (_this.isMqttConnect = false),
+          (_this.isSubing = false),
+          (_this.isConnecting = false),
+          (_this.isInit = false),
+          (_this.isRepeat = false),
+          (_this.isSending = false),
+          clearInterval(_this.send_interval);
+        clearInterval(_this.interval);
       };
     },
     connectMqtt() {
@@ -512,7 +535,7 @@ export default {
       if (this.topic_tx === "") {
         return this.$message.error("topic for tx 参数未填写");
       }
-      if (this.fPort === "" || typeof this.fPort !== "number") {
+      if (this.fPort === "" || this.fPort < 2 || this.fport > 223) {
         return this.$message.error("fPort 参数未填写或错误");
       }
       // 缓存 fport
@@ -521,9 +544,13 @@ export default {
       localStorage.setItem("data_sent", this.data_sent);
       let _this = this;
       if (this.isRepeat) {
-        if (this.delay === "" || typeof this.delay !== "number") {
+        if (this.delay === "" || this.delay < 200) {
           return this.$message.error("delay 参数未填写或错误");
         }
+        // 缓存 repeat
+        localStorage.setItem("isRepeat", this.isRepeat);
+        localStorage.setItem("delay", this.delay);
+
         this.send_interval = setInterval(function() {
           _this.ws.send(
             JSON.stringify({
