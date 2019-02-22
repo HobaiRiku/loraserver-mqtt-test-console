@@ -324,9 +324,9 @@ export default {
     const host_c = localStorage.getItem("host");
     const topic_c = localStorage.getItem("topic");
     const topic_tx_c = localStorage.getItem("topic_tx");
-    const fPort_c = localStorage.getItem("fPort");
+    const fPort_c = parseInt(localStorage.getItem("fPort"));
     const data_sent_c = localStorage.getItem("data_sent");
-    const delay_c = localStorage.getItem("delay");
+    const delay_c = parseInt(localStorage.getItem("delay"));
     const isRepeat_c = JSON.parse(localStorage.getItem("isRepeat"));
     this.host = host_c !== undefined ? host_c : "";
     this.topic = topic_c !== undefined ? topic_c : "";
@@ -556,19 +556,19 @@ export default {
             JSON.stringify({
               type: "sendMessage",
               topic: _this.topic_tx,
-              fPort: _this.fPort,
+              fPort: parseInt(_this.fPort),
               confirmed: _this.isConfirmed,
               data: _this.data_sent
             })
           );
           _this.sent_count++;
-        }, _this.delay);
+        }, parseInt(_this.delay));
       } else {
         this.ws.send(
           JSON.stringify({
             type: "sendMessage",
             topic: this.topic_tx,
-            fPort: this.fPort,
+            fPort: parseInt(this.fPort),
             confirmed: this.isConfirmed,
             data: this.data_sent
           })
