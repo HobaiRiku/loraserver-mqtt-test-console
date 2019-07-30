@@ -2,3 +2,4 @@ base64-util.js
 mqtt-test-console.js
 .idea/
 node_modules
+*.log

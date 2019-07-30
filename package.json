@@ -12,7 +12,7 @@
     "dev-ui": "cd ./ui && yarn run serve",
     "install-ui": "cd ./ui && yarn install",
     "install-all": "npm i && cd ./ui && yarn install",
-    "deploy_run":"npm stop && npm run install-all && npm run build-ui && npm start"
+    "deploy_run": "npm stop && npm run install-all && npm run build-ui && npm start"
   },
   "repository": {
     "type": "git",
@@ -29,14 +29,14 @@
     "koa": "^2.7.0",
     "koa-router": "^7.4.0",
     "koa-static": "^5.0.0",
-    "mqtt": "^2.18.8",
-    "tslib": "^1.9.3",
-    "typescript": "^3.3.3",
-    "websocket": "^1.0.28"
+    "mqtt": "^3.0.0",
+    "tslib": "^1.10.0",
+    "typescript": "^3.5.3",
+    "websocket": "^1.0.29"
   },
   "devDependencies": {
     "@types/base-64": "^0.1.3",
-    "@types/koa": "^2.0.48",
+    "@types/koa": "^2.0.49",
     "@types/koa-static": "^4.0.1",
     "@types/mqtt": "^2.5.0",
     "@types/websocket": "0.0.40"
